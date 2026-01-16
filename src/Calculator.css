@@ -1,0 +1,212 @@
+.calculator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.calculator {
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  border-radius: 25px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  width: 320px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.display-section {
+  background: linear-gradient(135deg, #1a4d2e 0%, #2d5a3d 100%);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mode {
+  color: #90ee90;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.display {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 300;
+  text-align: right;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.buttons-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.function-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.function-btn {
+  padding: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mod-btn,
+.even-btn {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+}
+
+.mod-btn:hover,
+.even-btn:hover {
+  background: linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 100%);
+  transform: translateY(-2px);
+}
+
+.mod-btn:active,
+.even-btn:active {
+  transform: translateY(0);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.row:first-of-type {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.row:nth-child(3) {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+button {
+  padding: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #ffffff;
+}
+
+.number-btn {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+}
+
+.number-btn:hover {
+  background: linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 100%);
+  transform: translateY(-2px);
+}
+
+.number-btn:active {
+  transform: translateY(0);
+}
+
+.operator-btn {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+  font-weight: 600;
+}
+
+.operator-btn:hover {
+  background: linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 100%);
+  transform: translateY(-2px);
+}
+
+.operator-btn:active {
+  transform: translateY(0);
+}
+
+.del-btn {
+  background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.del-btn:hover {
+  background: linear-gradient(135deg, #daa520 0%, #ffd700 100%);
+}
+
+.ac-btn {
+  background: linear-gradient(135deg, #c41e3a 0%, #dc143c 100%);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+
+.ac-btn:hover {
+  background: linear-gradient(135deg, #dc143c 0%, #ff1744 100%);
+ 
+}
+
+.equals-btn {
+  background: linear-gradient(135deg, #1e90ff 0%, #4169e1 100%);
+  color: #ffffff;
+  font-weight: 700;
+  grid-column: span 1;
+}
+
+.equals-btn:hover {
+  background: linear-gradient(135deg, #4169e1 0%, #6495ed 100%);
+  transform: translateY(-2px);
+}
+
+.equals-btn:active {
+  transform: translateY(0);
+}
+
+.zero-btn {
+  grid-column: span 1;
+}
+
+.pi-btn {
+  color: #ffd700;
+  font-size: 16px;
+}
+
+.e-btn {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+}
+
+.ans-btn {
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ans-btn:hover {
+  background: linear-gradient(135deg, #5a5a5a 0%, #4a4a4a 100%);
+  transform: translateY(-2px);
+}
+
+.ans-btn:active {
+  transform: translateY(0);
+}
