@@ -2,124 +2,143 @@ import { useState } from 'react'
 import './Calculator.css'
 
 function Calculator() {
-  const [display, setDisplay] = useState('0')
-  const [input, setInput] = useState('')
-  const [result, setResult] = useState(null)
-  const [mode, setMode] = useState('RAD')
+  const [display, setDisplay] = useState('')
+  const [isResult, setIsResult] = useState(false) // Track if we just showed a result
+  const [mode, setMode] = useState('RAD') // Kept for UI consistency, though not used in logic yet
+
+  // Helper to insert values into the expression string
+  const insert = (val) => {
+    if (isResult) {
+      // If we just showed a result:
+      // - If user types an operator, append it to the result.
+      // - If user types a number/constant, start a fresh expression.
+      const isOperator = ['+', '-', '*', '/', 'x', '%'].includes(val)
+      
+      if (isOperator) {
+        setDisplay(display + val)
+        setIsResult(false)
+      } else {
+        setDisplay(String(val))
+        setIsResult(false)
+      }
+    } else {
+      setDisplay(display + val)
+    }
+  }
 
   const handleNumber = (num) => {
-    if (input === '' && display === '0') {
-      setInput(String(num))
-      setDisplay(String(num))
-    } else {
-      setInput(input + num)
-      setDisplay(display === '0' ? String(num) : display + num)
-    }
+    insert(String(num))
   }
 
   const handleOperator = (op) => {
-    if (input === '' && result === null) return
-    if (input !== '') {
-      setResult(parseFloat(input))
-      setInput('')
+    // Prevent starting with an operator (except minus)
+    if (display === '' && op !== '-') return
+    insert(op)
+  }
+
+  // Unified evaluation function used by Equals, Mod_Sum, and Even_ODD
+  const evaluateExpression = () => {
+    try {
+      if (!display) return 0
+      
+      // Replace visual symbols with JS operators
+      let expr = display
+        .replaceAll('x', '*')
+        .replaceAll('÷', '/')
+        .replaceAll('π', 'Math.PI')
+        .replaceAll('e', 'Math.E')
+      
+      // Use new Function for safer evaluation than eval()
+      // eslint-disable-next-line no-new-func
+      const result = new Function(`return ${expr}`)()
+      return result
+    } catch (err) {
+      return 'Error'
     }
-    setDisplay(display + op)
   }
 
   const handleEquals = () => {
-    try {
-      const expression = display
-      const evalResult = eval(expression)
-      setDisplay(String(evalResult))
-      setInput(String(evalResult))
-      setResult(evalResult)
-    } catch {
+    const result = evaluateExpression()
+    if (result === 'Error') {
       setDisplay('Error')
+      setIsResult(true)
+    } else {
+      // Format to avoid long decimals
+      const final = String(Math.round(result * 100000000) / 100000000)
+      setDisplay(final)
+      setIsResult(true)
     }
   }
 
   const handleDelete = () => {
-    if (display.length > 1) {
-      setDisplay(display.slice(0, -1))
-      setInput(input.slice(0, -1))
+    if (isResult) {
+      setDisplay('')
+      setIsResult(false)
     } else {
-      setDisplay('0')
-      setInput('')
+      setDisplay(display.length > 0 ? display.slice(0, -1) : '')
     }
   }
 
   const handleClear = () => {
-    setDisplay('0')
-    setInput('')
-    setResult(null)
+    setDisplay('')
+    setIsResult(false)
   }
 
   const handleModSumSquare = () => {
-    const num = input || display
-    const numStr = String(Math.abs(parseInt(num)))
+    // 1. Calculate current expression first (e.g., if user typed "5+5", we need 10)
+    const val = evaluateExpression()
+    
+    if (val === 'Error' || typeof val !== 'number') {
+      setDisplay('Error')
+      setIsResult(true)
+      return
+    }
+
+    // 2. Logic: Sum of squares of digits
+    const numStr = String(Math.abs(Math.floor(val))) // absolute integer
     let sum = 0
     for (let digit of numStr) {
       sum += Math.pow(parseInt(digit), 2)
     }
+    
     setDisplay(String(sum))
-    setInput(String(sum))
+    setIsResult(true)
   }
 
   const handleEvenOdd = () => {
-    const num = parseInt(input || display)
-    if (isNaN(num)) {
-      setDisplay('Invalid')
+    // 1. Calculate current expression first
+    const val = evaluateExpression()
+    
+    if (val === 'Error' || typeof val !== 'number') {
+      setDisplay('Error')
+      setIsResult(true)
       return
     }
-    const result = num % 2 === 0 ? 'Even' : 'Odd'
+
+    // 2. Check Even/Odd
+    const result = Math.floor(val) % 2 === 0 ? 'Even' : 'Odd'
     setDisplay(result)
-    setInput('')
+    setIsResult(true)
   }
 
-  const handlePi = () => {
-    const piValue = Math.PI
-    setDisplay(String(piValue))
-    setInput(String(piValue))
-  }
+  // Scientific constants just append symbol to string
+  const handlePi = () => insert('π')
+  const handleE = () => insert('e')
+  
+  // Percent just appends symbol (handled in evaluate if needed, or simplistic /100 here)
+  // For simple string calc, usually % acts as modulo in JS, or /100. 
+  // Let's treat it as modulo operator '%' for this structure, or strictly append it.
+  const handlePercent = () => insert('%')
 
-  const handleE = () => {
-    const eValue = Math.E
-    setDisplay(String(eValue))
-    setInput(String(eValue))
-  }
-
-  const handlePercent = () => {
-    const num = parseFloat(input || display)
-    if (!isNaN(num)) {
-      const percent = num / 100
-      setDisplay(String(percent))
-      setInput(String(percent))
-    }
-  }
-
-  const handleParenthesis = (paren) => {
-    setDisplay(display + paren)
-    setInput(input + paren)
-  }
-
-  const handleDivision = () => {
-    if (input !== '') {
-      setDisplay(display + '/')
-    }
-  }
-
-  const handleMultiplication = () => {
-    if (input !== '') {
-      setDisplay(display + '*')
-    }
-  }
+  const handleParenthesis = (paren) => insert(paren)
 
   return (
     <div className="calculator-container">
       <div className="calculator">
         <div className="display-section">
           <div className="mode">{mode}</div>
-          <div className="display">{display}</div>
+          {/* Display shows full expression now */}
+          <div className="display">{display || '0'}</div>
         </div>
 
         <div className="buttons-section">
@@ -151,11 +170,11 @@ function Calculator() {
           </div>
 
           <div className="row">
-            <button className="operator-btn pi-btn">π</button>
+            <button className="operator-btn pi-btn" onClick={handlePi}>π</button>
             <button className="operator-btn e-btn" onClick={handleE}>
               e
             </button>
-            <button className="operator-btn" onClick={handleDivision}>
+            <button className="operator-btn" onClick={() => handleOperator('/')}>
               ÷
             </button>
           </div>
@@ -170,7 +189,7 @@ function Calculator() {
             <button className="number-btn" onClick={() => handleNumber(9)}>
               9
             </button>
-            <button className="operator-btn" onClick={handleMultiplication}>
+            <button className="operator-btn" onClick={() => handleOperator('x')}>
               x
             </button>
           </div>
@@ -206,11 +225,11 @@ function Calculator() {
           </div>
 
           <div className="row">
-            <button className="ans-btn">Ans</button>
+            <button className="ans-btn" onClick={() => insert('Ans')}>Ans</button>
             <button className="number-btn zero-btn" onClick={() => handleNumber(0)}>
               0
             </button>
-            <button className="operator-btn" onClick={() => setInput(input + '.')}>
+            <button className="operator-btn" onClick={() => insert('.')}>
               .
             </button>
             <button className="equals-btn" onClick={handleEquals}>
